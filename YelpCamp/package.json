@@ -1,0 +1,20 @@
+{
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u001b[A\u001b[B\u001b[A\u001b[B\u001b[A\u001b[AYelpCamp final project\u001b[B\u001b[B\u001b[D\u001b[B\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dhttps://github.com/Raz-y/The-Web-Developer-Bootcamp-2023.git"
+  },
+  "author": "Raz Yehiel",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.2"
+  }
+}
