@@ -1,8 +1,15 @@
 const Campground = require('../models/campground')
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding")
+const mapBoxToken = process.env.MAPBOX_TOKEN
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
 const { cloudinary } = require('../cloudinary')
+const campground = require('../models/campground')
+
+
 module.exports.index = async (req, res) => {
-    const camgrounds = await Campground.find({});
-    res.render('campgrounds/index', { camgrounds })
+
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds })
 }
 
 module.exports.renderNewForm = (req, res) => {
@@ -10,7 +17,12 @@ module.exports.renderNewForm = (req, res) => {
 }
 
 module.exports.createCampground = async (req, res, next) => {
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send()
     const campground = new Campground(req.body.campground);
+    campground.geometry = geoData.body.features[0].geometry;
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     campground.author = req.user._id;
     await campground.save();
@@ -40,6 +52,7 @@ module.exports.renderEditForm = async (req, res) => {
         req.flash('error', 'Cannot find campground');
         return res.redirect('/campgrounds');
     }
+
     res.render('campgrounds/edit', { campground });
 }
 
@@ -53,7 +66,6 @@ module.exports.updateCampground = async (req, res) => {
             await cloudinary.uploader.destroy(filename)
         }
         await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } })
-        console.log(campground)
     }
 
     campground.save();
