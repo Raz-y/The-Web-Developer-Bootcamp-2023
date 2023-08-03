@@ -1,6 +1,8 @@
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
+
+
 const express = require('express');
 const path = require('path');
 const methodOverride = require('method-override');
@@ -18,14 +20,15 @@ const localStrategy = require('passport-local')
 const User = require('./models/user')
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet')
-
+const MongoStore = require('connect-mongo');
 
 const campgroundRoutes = require('./routes/campgrounds')
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users')
 
+const dbUrl = 'mongodb://127.0.0.1:27017/yelp-camp'
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
+mongoose.connect(dbUrl)
     .then(() => {
         console.log("Database connected");
     })
@@ -45,7 +48,22 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(mongoSanitize())
 
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'thisshouldbeabettersecret!'
+    }
+});
+
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e)
+
+})
+
+
 const sessionConfig = {
+    store,
     name: 'session',
     secret: 'secret',
     resave: false,
@@ -56,8 +74,8 @@ const sessionConfig = {
         expires: Date.now() + (1000 * 60 * 60 * 24 * 7),
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
-
 }
+
 app.use(session(sessionConfig))
 app.use(flash())
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -152,7 +170,8 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err })
 })
 
+const port = process.env.PORT
 
-app.listen(3000, () => {
-    console.log('Serving on port 3000');
+app.listen(port, () => {
+    console.log('Serving');
 });
