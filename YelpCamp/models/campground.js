@@ -41,10 +41,10 @@ const CampGroundSchema = new Schema({
             ref: 'Review'
         }
     ],
-});
+}, opts);
 
 CampGroundSchema.virtual('properties.popUpMarkup').get(function () {
-    return `<strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+    return `<h6><strong><a href="/campgrounds/${this._id}">${this.title}</a></strong></h6>
     <p>${this.description.substring(0, 20)}...</p > `
 })
 

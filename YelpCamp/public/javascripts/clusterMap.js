@@ -1,8 +1,3 @@
-
-
-
-
-
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
     container: 'cluster-map',
@@ -110,7 +105,8 @@ map.on('load', function () {
     // the location of the feature, with
     // description HTML from its properties.
     map.on('click', 'unclustered-point', function (e) {
-        //const { popUpMarkup } = e.features[0].title
+
+        const { popUpMarkup } = e.features[0].properties
         const coordinates = e.features[0].geometry.coordinates.slice();
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -121,7 +117,7 @@ map.on('load', function () {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML() //need to add popUpMarkup
+            .setHTML(popUpMarkup)
             .addTo(map);
     });
 

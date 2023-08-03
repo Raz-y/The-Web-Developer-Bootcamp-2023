@@ -136,7 +136,8 @@
 
     <script>
         const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
-        const campground = JSON.parse('<%-JSON.stringify(campground)%>');
+        const encodedCampground = '<%- encodeURIComponent(JSON.stringify(campground)) %>';
+        const campground = JSON.parse(decodeURIComponent(encodedCampground));
     </script>
 
 
