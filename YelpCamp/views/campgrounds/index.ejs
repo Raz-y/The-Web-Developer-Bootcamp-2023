@@ -1,48 +1,63 @@
 <% layout('layouts/boilerplate') %>
     <div id="cluster-map"></div>
-    <h1>All camgrounds</h1>
+    <div class="text-center  mb-10 mt-10">
+        <h1>All Camgrounds</h1>
+    </div>
+    <div class="card mb-3 mt-3">
+        <form action="/campgrounds/search" method="get" class="d-flex" novalidate>
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="input">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
 
-    <% for(let campground of campgrounds) {%>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-4">
-                    <% if(campground.images.length) { %>
-                        <img crossorigin="anonymous" class="img-fluid" alt="" src="<%= campground.images[0].url%>">
-                        <% }else { %>
-                            <img crossorigin="anonymous" class="img-fluid" alt="" src="<%= campground.images[0].url%>">
-                            <% } %>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <%= campground.title %>
-                        </h5>
+    </div>
+
+    <% if (foundCamps && foundCamps.length> 0) { %>
+        <% campgrounds=foundCamps %>
+            <% } %>
+
+                <% for(let campground of campgrounds) {%>
+                    <div class="card mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <% if(campground.images.length) { %>
+                                    <img crossorigin="anonymous" class="img-fluid" alt=""
+                                        src="<%= campground.images[0].url%>">
+                                    <% }else { %>
+                                        <img crossorigin="anonymous" class="img-fluid" alt=""
+                                            src="<%= campground.images[0].url%>">
+                                        <% } %>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <%= campground.title %>
+                                    </h5>
 
 
 
-                        <p class="card-text">
-                            <%= campground.description %>
-                        </p>
-                        <p class="card-text">
-                            <small class="text-light-emphasis">
-                                <%= campground.location %>
-                            </small>
-                        </p>
-                        <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Details</a>
+                                    <p class="card-text">
+                                        <%= campground.description %>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-light-emphasis">
+                                            <%= campground.location %>
+                                        </small>
+                                    </p>
+                                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">Details</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <% } %>
-            <script>
-                const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
-                // const campgrounds = { features: JSON.parse('') }
+                    <% } %>
+                        <script>
+                            const mapToken = '<%-process.env.MAPBOX_TOKEN%>';
+                            // const campgrounds = { features: JSON.parse('') }
 
-                const encodedCampgrounds = '<%- encodeURIComponent(JSON.stringify(campgrounds)) %>';
-                const campgrounds = { features: JSON.parse(decodeURIComponent(encodedCampgrounds)) };
+                            const encodedCampgrounds = '<%- encodeURIComponent(JSON.stringify(campgrounds)) %>';
+                            const campgrounds = { features: JSON.parse(decodeURIComponent(encodedCampgrounds)) };
 
 
-            </script>
+                        </script>
 
-            <script src="/javascripts/clusterMap.js"></script>
+                        <script src="/javascripts/clusterMap.js"></script>

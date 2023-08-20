@@ -9,7 +9,8 @@ const campground = require('../models/campground')
 module.exports.index = async (req, res) => {
 
     const campgrounds = await Campground.find({});
-    res.render('campgrounds/index', { campgrounds })
+    const foundCamps = null
+    res.render('campgrounds/index', { campgrounds, foundCamps })
 }
 
 module.exports.renderNewForm = (req, res) => {
@@ -78,4 +79,19 @@ module.exports.deleteCampground = async (req, res) => {
     await Campground.findByIdAndDelete(id);
     req.flash('success', 'Seccessfully deleted campground')
     res.redirect('/campgrounds');
+}
+
+module.exports.showSearchResults = async (req, res) => {
+    const name = req.query.input;
+    const campgrounds = await Campground.find({});
+    const foundCamps = await Campground.find({
+        $or: [
+            { title: { $regex: name, $options: 'i' } },
+            { location: { $regex: name, $options: 'i' } }
+        ]
+    });
+
+    res.render('campgrounds', { campgrounds, foundCamps })
+
+
 }
